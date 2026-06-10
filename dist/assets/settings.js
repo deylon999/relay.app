@@ -1,1 +1,1 @@
-const t={enabled:!1,targetLanguage:"ru",subtitlePosition:"bottom",subtitleScale:1},e="relay.settings";export{t as D,e as R};
+const t={targetLanguage:"ru",subtitlePosition:"bottom",subtitleScale:1},s="relay.settings";export{t as D,s as R};

@@ -1,3 +1,4 @@
+import type { RelayCaptureState } from "../shared/messages";
 import type { RelaySettings } from "../shared/settings";
 
 const SAMPLE_TEXT = "Relay subtitles will appear here";
@@ -8,9 +9,15 @@ export class RelayOverlay {
   private readonly subtitle: HTMLDivElement;
   private readonly status: HTMLDivElement;
   private settings: RelaySettings;
+  private captureState: RelayCaptureState;
 
   constructor(settings: RelaySettings) {
     this.settings = settings;
+    this.captureState = {
+      tabId: null,
+      status: "idle",
+      chunkCount: 0
+    };
     this.host = document.createElement("div");
     this.host.id = "relay-extension-root";
     this.root = this.host.attachShadow({ mode: "open" });
@@ -25,18 +32,44 @@ export class RelayOverlay {
     }
 
     this.applySettings(this.settings);
+    this.applyCaptureState(this.captureState);
   }
 
   applySettings(settings: RelaySettings): void {
     this.settings = settings;
-    this.host.dataset.enabled = String(settings.enabled);
     this.host.dataset.position = settings.subtitlePosition;
     this.subtitle.style.setProperty("--relay-subtitle-scale", String(settings.subtitleScale));
-    this.status.textContent = settings.enabled ? "Relay on" : "Relay off";
+  }
 
-    if (!settings.enabled) {
+  applyCaptureState(state: RelayCaptureState): void {
+    this.captureState = state;
+    this.host.dataset.status = state.status;
+
+    if (state.status === "idle") {
       this.subtitle.textContent = SAMPLE_TEXT;
+      this.status.textContent = "Relay idle";
+      return;
     }
+
+    if (state.status === "starting") {
+      this.status.textContent = "Connecting audio";
+      this.subtitle.textContent = SAMPLE_TEXT;
+      return;
+    }
+
+    if (state.status === "stopping") {
+      this.status.textContent = "Stopping capture";
+      this.subtitle.textContent = SAMPLE_TEXT;
+      return;
+    }
+
+    if (state.status === "error") {
+      this.status.textContent = state.error ?? "Capture failed";
+      this.subtitle.textContent = SAMPLE_TEXT;
+      return;
+    }
+
+    this.status.textContent = `Capturing audio · ${state.chunkCount} chunks`;
   }
 
   showSubtitle(text: string): void {
@@ -85,7 +118,10 @@ export class RelayOverlay {
           top: 28px;
         }
 
-        :host([data-enabled="true"]) .relay-overlay {
+        :host([data-status="starting"]) .relay-overlay,
+        :host([data-status="capturing"]) .relay-overlay,
+        :host([data-status="stopping"]) .relay-overlay,
+        :host([data-status="error"]) .relay-overlay {
           opacity: 1;
           transform: translateX(-50%) translateY(0);
         }

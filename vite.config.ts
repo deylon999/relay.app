@@ -5,6 +5,7 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
+        offscreen: "offscreen.html",
         popup: "popup.html",
         contentScript: "src/content/contentScript.ts",
         serviceWorker: "src/background/serviceWorker.ts"

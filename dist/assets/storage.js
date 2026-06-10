@@ -1,0 +1,1 @@
+import{R as t,D as e}from"./settings.js";async function n(){const a=(await chrome.storage.local.get(t))[t];return{...e,...a}}async function r(s){await chrome.storage.local.set({[t]:s})}export{n as g,r as s};

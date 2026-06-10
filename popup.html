@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relay</title>
+  </head>
+  <body>
+    <main class="relay-popup">
+      <header class="relay-popup__header">
+        <div>
+          <p class="relay-popup__eyebrow">Relay</p>
+          <h1>Live voice translation</h1>
+        </div>
+        <label class="relay-switch" title="Enable Relay on this tab">
+          <input id="enabled" type="checkbox" />
+          <span></span>
+        </label>
+      </header>
+
+      <section class="relay-field">
+        <label for="targetLanguage">Target language</label>
+        <select id="targetLanguage">
+          <option value="ru">Russian</option>
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="de">German</option>
+          <option value="fr">French</option>
+        </select>
+      </section>
+
+      <section class="relay-field">
+        <label for="subtitlePosition">Subtitle position</label>
+        <select id="subtitlePosition">
+          <option value="bottom">Bottom</option>
+          <option value="top">Top</option>
+        </select>
+      </section>
+
+      <section class="relay-field">
+        <label for="subtitleScale">Subtitle size</label>
+        <input id="subtitleScale" type="range" min="0.85" max="1.35" step="0.05" />
+      </section>
+
+      <p id="status" class="relay-status">Ready</p>
+    </main>
+    <script type="module" src="/src/popup/popup.ts"></script>
+  </body>
+</html>
